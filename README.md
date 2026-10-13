@@ -2,6 +2,9 @@
 
 *The main aim of this project is to design, assemble, and program a compact, neutrally buoyant tethered Remotely Operated Vehicle (ROV) capable of underwater navigation, real-time video streaming, and object retrieval in a controlled aquatic environment.*
 
+<img width="896" height="1195" alt="Gemini_Generated_Image_og124hog124hog12" src="https://github.com/user-attachments/assets/a637dcd0-7245-4f67-a482-8995f6e3cb93" />
+
+
 ## Real World Applications:
 **1. Underwater Infrastructure & Pipeline Inspection**
   •	The Application: Inspecting underwater structures such as dam walls, bridge pilings, port jetties, and subsea oil or gas pipelines for structural cracks, corrosion, and erosion.
@@ -43,3 +46,7 @@
 •	12V Main Battery Pack & Fused Distribution Block: High-capacity power source providing isolated current rails to thrusters, logic systems, and high-power servos through branch protection fuses.
 •	5.1V / 5A DC-DC Buck Regulator: Step-down power module providing high-efficiency, ripple-free power to the Raspberry Pi 5.
 •	Master Power Disconnect & Hardware Interlock: Main physical cut-off switch allowing complete power isolation during servicing and tether handling.
+
+
+<img width="1536" height="1024" alt="circuit_diagram" src="https://github.com/user-attachments/assets/7c728d2c-177f-4745-a814-d56bee7480bd" />
+
