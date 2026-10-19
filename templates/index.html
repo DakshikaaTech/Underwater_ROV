@@ -10,9 +10,6 @@
         h2 { margin-top: 0; color: #38bdf8; }
         .alert-safe { background: #166534; padding: 10px; border-radius: 6px; font-weight: bold; }
         .alert-danger { background: #991b1b; padding: 10px; border-radius: 6px; font-weight: bold; }
-        button { padding: 12px 20px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; border-radius: 6px; margin: 5px; }
-        .btn-arm { background: #22c55e; color: white; }
-        .btn-disarm { background: #ef4444; color: white; }
         .control-group { margin: 15px 0; }
         input[type=range] { width: 100%; cursor: pointer; }
         .telemetry-val { font-family: monospace; color: #34d399; font-size: 1.2em; }
@@ -24,14 +21,10 @@
     
     <div class="card" style="margin-bottom: 20px;">
         <div id="leakAlert" class="alert-safe">System Status: Dry & Secure</div>
-        <div style="margin-top: 15px;">
-            <button class="btn-arm" onclick="setArmState(true)">ARM ROV</button>
-            <button class="btn-disarm" onclick="setArmState(false)">DISARM ROV</button>
-            <p>Arm Status: <span id="armStatusLabel" style="font-weight:bold; color:#ef4444;">DISARMED</span></p>
-        </div>
     </div>
 
     <div class="grid">
+        <!-- Propulsion Controls -->
         <div class="card">
             <h2>Propulsion (Thrusters)</h2>
             <div class="control-group"><label>Surge: <span id="surgeVal">0.0</span></label><input type="range" id="surge" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()"></div>
@@ -39,14 +32,9 @@
             <div class="control-group"><label>Yaw: <span id="yawVal">0.0</span></label><input type="range" id="yaw" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()"></div>
         </div>
 
+        <!-- IMU & Sensor Telemetry -->
         <div class="card">
-            <h2>Robotic Arm (70KG Servos)</h2>
-            <div class="control-group"><label>Servo 1: <span id="s0Val">135</span>°</label><input type="range" id="servo0" min="0" max="270" step="1" value="135" oninput="sendServo(0)"></div>
-            <div class="control-group"><label>Servo 2: <span id="s1Val">135</span>°</label><input type="range" id="servo1" min="0" max="270" step="1" value="135" oninput="sendServo(1)"></div>
-        </div>
-
-        <div class="card">
-            <h2>Sensor Telemetry</h2>
+            <h2>IMU & Sensor Telemetry</h2>
             <p>Depth: <span class="telemetry-val" id="depth">0.00</span> m</p>
             <p>Pitch: <span class="telemetry-val" id="pitch">0.0</span>°</p>
             <p>Roll: <span class="telemetry-val" id="roll">0.0</span>°</p>
@@ -59,7 +47,6 @@
         const socket = io();
         setInterval(() => { socket.emit('heartbeat'); }, 500);
 
-        function setArmState(state) { socket.emit('set_arm_state', { armed: state }); }
         function sendThrusters() {
             let surge = parseFloat(document.getElementById('surge').value);
             let heave = parseFloat(document.getElementById('heave').value);
@@ -69,17 +56,8 @@
             document.getElementById('yawVal').innerText = yaw;
             socket.emit('thruster_vector', { surge: surge, heave: heave, yaw: yaw });
         }
-        function sendServo(servoId) {
-            let angle = parseInt(document.getElementById('servo' + servoId).value);
-            document.getElementById('s' + servoId + 'Val').innerText = angle;
-            socket.emit('servo_command', { id: servoId, angle: angle });
-        }
 
         socket.on('telemetry_data', function(data) {
-            let armLbl = document.getElementById('armStatusLabel');
-            armLbl.innerText = data.armed ? "ARMED" : "DISARMED";
-            armLbl.style.color = data.armed ? "#22c55e" : "#ef4444";
-
             let leakDiv = document.getElementById('leakAlert');
             leakDiv.className = data.leak ? "alert-danger" : "alert-safe";
             leakDiv.innerText = data.leak ? "CRITICAL WARNING: WATER LEAK DETECTED!" : "System Status: Dry & Secure";
@@ -91,4 +69,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
