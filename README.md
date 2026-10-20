@@ -83,7 +83,7 @@ Connect the 10-meter flexible Ethernet tether through the waterproof bulkhead co
 The application translates normalized vector commands (Surge, Heave, Yaw) into precise microsecond PWM pulse widths for Electronic Speed Controllers (ESCs) and Brushless DC (BLDC) thrusters. It features a hybrid execution engine that allows seamless testing via desktop simulation or direct deployment on a Raspberry Pi with a PCA9685 PWM board.
 
 ## System Architecture & Features
-- **Hybrid Hardware/Simulation Engine**: Automatically checks for Raspberry Pi GPIO and I2C libraries upon startup. If running locally on a PC, it defaults to a safe simulation mode, logging microsecond targets to the console. On a Raspberry Pi, it initializes live hardware controls.
+- **Hybrid Execution Environment**: Automatically checks for Raspberry Pi GPIO and I2C libraries upon startup. If running locally on a PC, it defaults to a safe simulation mode, logging microsecond targets to the console. On a Raspberry Pi, it initializes live hardware controls.
 
 - **3-Thruster Mixing Algorithm**: Efficiently computes dual-horizontal thruster mixing (combining Surge and Yaw via differential thrust) alongside an independent vertical thruster channel (Heave).
 
