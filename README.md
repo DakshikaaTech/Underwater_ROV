@@ -74,6 +74,8 @@ Connect the 10-meter flexible Ethernet tether through the waterproof bulkhead co
 
 <img width="942" height="1280" alt="IMG-20261013-WA0002" src="https://github.com/user-attachments/assets/bc79679e-8df5-473e-9314-480e1107ce19" />
 
+## Circuit Diagram
+
 <img width="1536" height="1024" alt="circuit_diagram" src="https://github.com/user-attachments/assets/7c728d2c-177f-4745-a814-d56bee7480bd" />
 
 # Underwater ROV Control Stack (3-DOF, 3-Thruster Hybrid Architecture)
