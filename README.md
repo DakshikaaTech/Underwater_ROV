@@ -2,8 +2,7 @@
 
 *The main aim of this project is to design, assemble, and program a compact, neutrally buoyant tethered Remotely Operated Vehicle (ROV) capable of underwater navigation, real-time video streaming, and object retrieval in a controlled aquatic environment.*
 
-<img width="896" height="1195" alt="Gemini_Generated_Image_og124hog124hog12" src="https://github.com/user-attachments/assets/a637dcd0-7245-4f67-a482-8995f6e3cb93" />
-
+<img width="896" height="1195" alt="blueprint" src="https://github.com/user-attachments/assets/99a088fa-ee03-4c43-8246-921ca2c832ef" />
 
 ## Real World Applications:
 **1. Underwater Infrastructure & Pipeline Inspection**
