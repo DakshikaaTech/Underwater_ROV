@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ROV Control Simulation</title>
+    <title>ROV Control Hybrid Dashboard</title>
     <style>
+        /* Base styling for dark marine aesthetic */
         body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
         .card { background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         h2 { margin-top: 0; color: #38bdf8; }
-        .alert-safe { background: #166534; padding: 10px; border-radius: 6px; font-weight: bold; }
-        .alert-danger { background: #991b1b; padding: 10px; border-radius: 6px; font-weight: bold; }
+        
+        /* Alert Banner Styling (Switches between safe green and danger red) */
+        .alert-safe { background: #166534; padding: 10px; border-radius: 6px; font-weight: bold; transition: background 0.3s ease; }
+        .alert-danger { background: #991b1b; padding: 10px; border-radius: 6px; font-weight: bold; transition: background 0.3s ease; }
+        
         .control-group { margin: 15px 0; }
         input[type=range] { width: 100%; cursor: pointer; }
         .telemetry-val { font-family: monospace; color: #34d399; font-size: 1.2em; }
@@ -17,22 +21,35 @@
 </head>
 <body>
 
-    <h1>Underwater ROV Simulation Dashboard</h1>
+    <h1>Underwater ROV Hybrid Dashboard</h1>
     
+    <!-- System Safety Status Card & Water Leak Banner -->
     <div class="card" style="margin-bottom: 20px;">
         <div id="leakAlert" class="alert-safe">System Status: Dry & Secure</div>
     </div>
 
     <div class="grid">
-        <!-- Propulsion Controls -->
+        <!-- Propulsion Controls Card -->
         <div class="card">
-            <h2>Propulsion (Thrusters)</h2>
-            <div class="control-group"><label>Surge: <span id="surgeVal">0.0</span></label><input type="range" id="surge" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()"></div>
-            <div class="control-group"><label>Heave: <span id="heaveVal">0.0</span></label><input type="range" id="heave" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()"></div>
-            <div class="control-group"><label>Yaw: <span id="yawVal">0.0</span></label><input type="range" id="yaw" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()"></div>
+            <h2>Propulsion (3-Thruster Mixer)</h2>
+            <!-- Surge Slider (Forward/Backward) -->
+            <div class="control-group">
+                <label>Surge: <span id="surgeVal">0.0</span></label>
+                <input type="range" id="surge" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()">
+            </div>
+            <!-- Heave Slider (Up/Down Depth Control) -->
+            <div class="control-group">
+                <label>Heave: <span id="heaveVal">0.0</span></label>
+                <input type="range" id="heave" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()">
+            </div>
+            <!-- Yaw Slider (Left/Right Rotation) -->
+            <div class="control-group">
+                <label>Yaw: <span id="yawVal">0.0</span></label>
+                <input type="range" id="yaw" min="-1" max="1" step="0.05" value="0" oninput="sendThrusters()">
+            </div>
         </div>
 
-        <!-- IMU & Sensor Telemetry -->
+        <!-- IMU & Sensor Telemetry Readouts Card -->
         <div class="card">
             <h2>IMU & Sensor Telemetry</h2>
             <p>Depth: <span class="telemetry-val" id="depth">0.00</span> m</p>
@@ -42,26 +59,52 @@
         </div>
     </div>
 
+    <!-- Load Socket.IO client library from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
     <script>
+        // Establish real-time WebSocket connection back to the Flask server
         const socket = io();
-        setInterval(() => { socket.emit('heartbeat'); }, 500);
 
+        // Send a heartbeat ping every 500ms to keep connection health active
+        setInterval(() => { 
+            socket.emit('heartbeat'); 
+        }, 500);
+
+        /**
+         * Reads current slider positions, updates local UI text labels,
+         * and emits the vector data object over Socket.IO to the backend.
+         */
         function sendThrusters() {
             let surge = parseFloat(document.getElementById('surge').value);
             let heave = parseFloat(document.getElementById('heave').value);
             let yaw = parseFloat(document.getElementById('yaw').value);
-            document.getElementById('surgeVal').innerText = surge;
-            document.getElementById('heaveVal').innerText = heave;
-            document.getElementById('yawVal').innerText = yaw;
+            
+            // Update live numbers next to slider labels
+            document.getElementById('surgeVal').innerText = surge.toFixed(2);
+            document.getElementById('heaveVal').innerText = heave.toFixed(2);
+            document.getElementById('yawVal').innerText = yaw.toFixed(2);
+            
+            // Transmit vector dictionary to Python backend
             socket.emit('thruster_vector', { surge: surge, heave: heave, yaw: yaw });
         }
 
+        /**
+         * Listens for incoming telemetry streams broadcasted by the background thread.
+         * Updates the leak detector banner and sensor readouts in real-time.
+         */
         socket.on('telemetry_data', function(data) {
             let leakDiv = document.getElementById('leakAlert');
-            leakDiv.className = data.leak ? "alert-danger" : "alert-safe";
-            leakDiv.innerText = data.leak ? "CRITICAL WARNING: WATER LEAK DETECTED!" : "System Status: Dry & Secure";
+            
+            // Toggle alert banner classes and text based on water leak status flag
+            if (data.leak) {
+                leakDiv.className = "alert-danger";
+                leakDiv.innerText = "CRITICAL WARNING: WATER LEAK DETECTED!";
+            } else {
+                leakDiv.className = "alert-safe";
+                leakDiv.innerText = "System Status: Dry & Secure";
+            }
 
+            // Update IMU and depth telemetry text fields with precise decimals
             document.getElementById('depth').innerText = data.depth.toFixed(2);
             document.getElementById('pitch').innerText = data.pitch.toFixed(1);
             document.getElementById('roll').innerText = data.roll.toFixed(1);
