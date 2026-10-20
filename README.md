@@ -1,5 +1,4 @@
 
-
 # Underwater ROV Control Stack (3-DOF, 3-Thruster Hybrid Architecture)
 *A robust, real-time web-based control stack and telemetry dashboard designed for a 3-Degree-of-Freedom (3-DOF) underwater Remotely Operated Vehicle (ROV).*
 
