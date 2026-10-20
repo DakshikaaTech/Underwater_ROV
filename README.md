@@ -77,3 +77,18 @@ Connect the 10-meter flexible Ethernet tether through the waterproof bulkhead co
 
 <img width="1536" height="1024" alt="circuit_diagram" src="https://github.com/user-attachments/assets/7c728d2c-177f-4745-a814-d56bee7480bd" />
 
+# 3-Thruster Underwater ROV Control Stack
+
+A lightweight, hybrid Python and HTML/Socket.IO control application designed for a 3-Degree-of-Freedom (3-DOF) underwater Remotely Operated Vehicle (ROV). It maps normalized **Surge, Heave, and Yaw** vectors into microsecond PWM signals for Electronic Speed Controllers (ESCs) and Brushless DC (BLDC) thrusters, while providing real-time IMU telemetry and water leak detection monitoring.
+
+---
+
+## Features
+* **Hybrid Execution Environment:** Automatically detects hardware availability. Runs seamlessly in **Simulation Mode** on a desktop PC (logging outputs to the console) or directly in **Live Hardware Mode** on a Raspberry Pi using a PCA9685 PWM board.
+* **3-Thruster Mixing Algorithm:** Efficiently combines dual-horizontal thrusters (Surge/Yaw differential mixing) and a single vertical thruster (Heave) from simple dashboard slider inputs.
+* **Real-time Bi-directional Communication:** Uses `flask-socketio` for instant, low-latency transmission of motor commands and telemetry streaming.
+* **Safety Monitoring:** Features a dedicated background monitoring routine tracking live water leak detection and IMU attitude metrics (depth, pitch, roll, heading).
+
+<img width="959" height="474" alt="dashboard" src="https://github.com/user-attachments/assets/1319d8bb-0448-40f2-ac88-98a0b6877dec" />
+
+
